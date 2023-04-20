@@ -18,10 +18,23 @@
 
 package org.wso2.carbon.identity.verification.mongo.datasource.utils;
 
+/**
+ * This class contains the constants of the identity verifier.
+ */
 public class IdentityVerificationConstants {
 
     private static final String IDV_ERROR_PREFIX = "IDV-MDS-";
+    public static final String TENANT_ID_REGEX = "tenantId";
+    public static final String IDV_CLAIM_REGEX = "uuid";
+    public static final String STATUS_REGEX = "status";
+    public static final String METADATA_REGEX = "metadata";
+    public static final String USER_ID_REGEX = "userId";
+    public static final String CLAIM_URI_REGEX = "claimUri";
+    public static final String IDVP_ID_REGEX = "idVPId";
 
+    /**
+     * Holds constants related to configuring the database connection.
+     */
     public static class DatabaseConstants {
 
         public static final String DATABASE_URL_REGEX = "datasource.configuration.url";
@@ -29,6 +42,9 @@ public class IdentityVerificationConstants {
         public static final String DATABASE_COLLECTION_REGEX = "datasource.configuration.collectionName";
     }
 
+    /**
+     * Error messages.
+     */
     public enum ErrorMessage {
 
         ERROR_CHECKING_IDV_CLAIM_EXISTENCE("15000",
@@ -40,7 +56,10 @@ public class IdentityVerificationConstants {
         ERROR_UPDATING_IDV_CLAIM("15004", "Error updating the Identity Verification Claim."),
         ERROR_DELETING_IDV_CLAIM("15005", "Error deleting the Identity Verification Claim."),
         ERROR_RETRIEVING_IDV_CLAIM("15006", "Error retrieving the Identity Verification Claim."),
-        ERROR_RETRIEVING_IDV_CLAIMS("15007", "Error retrieving the Identity Verification Claims.");
+        ERROR_RETRIEVING_IDV_CLAIMS("15007", "Error retrieving the Identity Verification Claims."),
+        ERROR_GETTING_USER_STORE_URL("15008", "Error while getting the user store URL."),
+        ERROR_GETTING_USER_STORE_DATA("15008",
+                "Error while getting the user store name and collection name.");
 
         private final String errorCode;
         private final String errorMessage;
@@ -66,7 +85,5 @@ public class IdentityVerificationConstants {
 
             return errorCode + ":" + errorMessage;
         }
-
-
     }
 }
