@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
  *
@@ -16,6 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.wso2.carbon.identity.verification.mongo.datasource.internal;
 
 import org.apache.commons.logging.Log;
