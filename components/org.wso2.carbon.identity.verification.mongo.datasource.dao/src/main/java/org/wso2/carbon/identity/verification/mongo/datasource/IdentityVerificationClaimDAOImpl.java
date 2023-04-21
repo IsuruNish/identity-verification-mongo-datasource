@@ -47,25 +47,25 @@ import com.google.gson.Gson;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_PROCESSING_IDV_CLAIM;
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_ADDING_IDV_CLAIMS;
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_UPDATING_IDV_CLAIM;
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_RETRIEVING_IDV_CLAIM;
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_RETRIEVING_IDV_CLAIMS;
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_CHECKING_IDV_CLAIM_EXISTENCE;
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_CHECKING_IDV_CLAIM_DATA_EXISTENCE;
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_DELETING_IDV_CLAIM;
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_GETTING_USER_STORE_URL;
-import static  org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
+import static org.wso2.carbon.identity.verification.mongo.datasource.utils.IdentityVerificationConstants.ErrorMessage.
         ERROR_GETTING_USER_STORE_DATA;
 
 /**
@@ -88,7 +88,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
      * Add the identity verification claim.
      *
      * @param idvClaimList IdentityVerificationClaim list.
-     * @param tenantId Tenant id.
+     * @param tenantId     Tenant id.
      * @throws IdentityVerificationException Identity verification claim management exception.
      */
     @Override
@@ -142,7 +142,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
                             idVClaim.getStatus()),
                     Updates.set(IdentityVerificationConstants.METADATA_REGEX,
                             metadataDoc));
-            collection.updateOne(filter , update);
+            collection.updateOne(filter, update);
         } catch (MongoClientException e) {
             throw new IdentityVerificationServerException(ERROR_UPDATING_IDV_CLAIM.getCode(),
                     ERROR_UPDATING_IDV_CLAIM.getMessage(), e);
@@ -152,9 +152,9 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
     /**
      * Get the identity verification claim.
      *
-     * @param userId User id.
+     * @param userId     User id.
      * @param idVClaimId Identity verification claim id.
-     * @param tenantId Tenant id.
+     * @param tenantId   Tenant id.
      * @return Identity verification claim.
      * @throws IdentityVerificationException Identity verification claim management exception.
      */
@@ -166,14 +166,16 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
             Document doc = collection.find(Filters.and(
                     Filters.eq(IdentityVerificationConstants.IDV_CLAIM_REGEX, idVClaimId),
                     Filters.eq(IdentityVerificationConstants.TENANT_ID_REGEX, tenantId))).first();
-            if (doc != null){
+            if (doc != null) {
                 return mapJsonToObj(doc.toJson());
             }
             return null;
         } catch (MongoClientException e) {
-            throw new IdentityVerificationServerException(ERROR_RETRIEVING_IDV_CLAIM.getCode(), ERROR_RETRIEVING_IDV_CLAIM.getMessage(), e);
+            throw new IdentityVerificationServerException(ERROR_RETRIEVING_IDV_CLAIM.getCode(),
+                    ERROR_RETRIEVING_IDV_CLAIM.getMessage(), e);
         } catch (JsonProcessingException e) {
-            throw new IdentityVerificationServerException(ERROR_PROCESSING_IDV_CLAIM.getCode(), ERROR_PROCESSING_IDV_CLAIM.getMessage(), e);
+            throw new IdentityVerificationServerException(ERROR_PROCESSING_IDV_CLAIM.getCode(),
+                    ERROR_PROCESSING_IDV_CLAIM.getMessage(), e);
         }
     }
 
@@ -228,17 +230,18 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
                                      );
             collection.deleteOne(filter);
         } catch (MongoClientException e) {
-            throw new IdentityVerificationServerException(ERROR_DELETING_IDV_CLAIM.getCode(), ERROR_DELETING_IDV_CLAIM.getMessage(), e);
+            throw new IdentityVerificationServerException(ERROR_DELETING_IDV_CLAIM.getCode(),
+                    ERROR_DELETING_IDV_CLAIM.getMessage(), e);
         }
     }
 
     /**
      * Check whether the identity verification claim exist.
      *
-     * @param userId        User id.
-     * @param idVPId        Identity verification provider id.
-     * @param uri           Claim uri.
-     * @param tenantId      Tenant id.
+     * @param userId   User id.
+     * @param idVPId   Identity verification provider id.
+     * @param uri      Claim uri.
+     * @param tenantId Tenant id.
      * @return True if the identity verification claim exist.
      * @throws IdentityVerificationException Identity verification exception.
      */
@@ -255,7 +258,8 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
                     Filters.eq(IdentityVerificationConstants.CLAIM_URI_REGEX, uri))).first();
             return doc != null;
         } catch (MongoClientException e) {
-            throw new IdentityVerificationServerException(ERROR_CHECKING_IDV_CLAIM_DATA_EXISTENCE.getCode(), ERROR_CHECKING_IDV_CLAIM_DATA_EXISTENCE.getMessage(), e);
+            throw new IdentityVerificationServerException(ERROR_CHECKING_IDV_CLAIM_DATA_EXISTENCE.getCode(),
+                    ERROR_CHECKING_IDV_CLAIM_DATA_EXISTENCE.getMessage(), e);
         }
     }
 
@@ -276,8 +280,9 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
                     Filters.eq(IdentityVerificationConstants.IDV_CLAIM_REGEX, claimId),
                     Filters.eq(IdentityVerificationConstants.TENANT_ID_REGEX, tenantId))).first();
             return doc != null;
-        }  catch (MongoClientException e) {
-            throw new IdentityVerificationServerException(ERROR_CHECKING_IDV_CLAIM_EXISTENCE.getCode(), ERROR_CHECKING_IDV_CLAIM_EXISTENCE.getMessage(), e);
+        } catch (MongoClientException e) {
+            throw new IdentityVerificationServerException(ERROR_CHECKING_IDV_CLAIM_EXISTENCE.getCode(),
+                    ERROR_CHECKING_IDV_CLAIM_EXISTENCE.getMessage(), e);
         }
     }
 
@@ -290,7 +295,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
     private MongoClient createDatabaseConnection() throws IdentityVerificationServerException {
 
         String url = IdentityUtil.getProperty(IdentityVerificationConstants.DatabaseConstants.DATABASE_URL_REGEX);
-        if (url != null){
+        if (url != null) {
             return MongoClients.create(url);
         }
         throw new IdentityVerificationServerException(ERROR_GETTING_USER_STORE_URL.getCode(),
@@ -310,7 +315,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         String collectionName = IdentityUtil.
                 getProperty(IdentityVerificationConstants.DatabaseConstants.DATABASE_COLLECTION_REGEX);
 
-        if (db != null && collectionName != null){
+        if (db != null && collectionName != null) {
             return client.getDatabase(db).getCollection(collectionName);
         }
         throw new IdentityVerificationServerException(ERROR_GETTING_USER_STORE_DATA.getCode(),
@@ -330,7 +335,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         ObjectMapper mapper = new ObjectMapper();
         JsonNode metadataJsonNode = mapper.readTree(json).get(IdentityVerificationConstants.METADATA_REGEX);
         IdVClaim idVClaim = gson.fromJson(json, IdVClaim.class);
-        if (metadataJsonNode != null){
+        if (metadataJsonNode != null) {
             idVClaim.setMetadata(new JSONObject(metadataJsonNode.toString()));
         }
         return idVClaim;

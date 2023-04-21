@@ -28,6 +28,8 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.extension.identity.verification.mgt.dao.IdentityVerificationClaimDAO;
 import org.wso2.carbon.identity.verification.mongo.datasource.IdentityVerificationClaimDAOImpl;
 
+//todo
+//chnage this
 /**
  * OSGi declarative services component which handles registration and un-registration of
  * IdentityVerifierService.
@@ -47,6 +49,8 @@ public class IdentityVerificationServiceComponent {
             IdentityVerificationClaimDAO identityVerificationMongoService = new IdentityVerificationClaimDAOImpl();
             ctxt.getBundleContext().registerService(IdentityVerificationClaimDAO.class.getName(),
                     identityVerificationMongoService, null);
+            // TODO: 4/21/2023  
+//            change this
             log.info("IdentityVerificationService bundle activated successfully.");
             if (log.isDebugEnabled()) {
                 log.debug("IdentityVerificationService bundle is activated");

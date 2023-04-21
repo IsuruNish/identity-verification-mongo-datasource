@@ -60,7 +60,6 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.12</version>
         </dependency>
 
 <!--        <dependency>-->
@@ -124,6 +123,8 @@
 
     </dependencies>
 
+<!--    todo-->
+<!--    remove this-->
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -148,6 +149,8 @@
                             version="${carbon.identity.package.import.version.range}",
                         </Import-Package>
 
+<!--                        todo-->
+<!--                        remove this-->
                         <DynamicImport-Package>*</DynamicImport-Package>
 
                         <Export-Package>
