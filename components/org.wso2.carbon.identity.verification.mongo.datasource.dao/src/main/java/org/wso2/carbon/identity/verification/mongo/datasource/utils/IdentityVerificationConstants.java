@@ -23,21 +23,19 @@ package org.wso2.carbon.identity.verification.mongo.datasource.utils;
  */
 public class IdentityVerificationConstants {
 
-//    todo: remove regex
     private static final String IDV_ERROR_PREFIX = "IDV-MDS-";
-    public static final String TENANT_ID_REGEX = "tenantId";
-    public static final String IDV_CLAIM_REGEX = "uuid";
-    public static final String STATUS_REGEX = "status";
-    public static final String METADATA_REGEX = "metadata";
-    public static final String USER_ID_REGEX = "userId";
-    public static final String CLAIM_URI_REGEX = "claimUri";
-    public static final String IDVP_ID_REGEX = "idVPId";
+    public static final String TENANT_ID = "tenantId";
+    public static final String IDV_CLAIM = "uuid";
+    public static final String STATUS = "status";
+    public static final String METADATA = "metadata";
+    public static final String USER_ID = "userId";
+    public static final String CLAIM_URI = "claimUri";
+    public static final String IDVP_ID = "idVPId";
 
-//    config
     /**
      * Holds constants related to configuring the database connection.
      */
-    public static class DatabaseConstants {
+    public static class DatabaseConfigConstants {
 
         public static final String DATABASE_URL_REGEX = "datasource.configuration.url";
         public static final String DATABASE_NAME_REGEX = "datasource.configuration.databaseName";

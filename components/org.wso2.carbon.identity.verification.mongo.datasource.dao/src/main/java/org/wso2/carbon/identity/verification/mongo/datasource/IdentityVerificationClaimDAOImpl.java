@@ -21,14 +21,12 @@ package org.wso2.carbon.identity.verification.mongo.datasource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.mongodb.MongoClientException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.model.Filters;
 
@@ -96,14 +94,17 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
 
         try (MongoClient mongoClient = createDatabaseConnection()) {
             Gson gson = new Gson();
-            ObjectMapper mapper = new ObjectMapper();
             List<Document> documents = new ArrayList<>();
             for (IdVClaim idVClaim : idvClaimList) {
-                String jsonStr = gson.toJson(idVClaim);
-                ObjectNode jsonNode = (ObjectNode) mapper.readTree(jsonStr);
-                jsonNode.put(IdentityVerificationConstants.TENANT_ID_REGEX, tenantId);
-                String json = mapper.writeValueAsString((jsonNode));
-                Document doc = Document.parse(json);
+                Document doc = Document.parse(gson.toJson(idVClaim));
+                Document metadataDoc = new Document();
+                for (String key : idVClaim.getMetadata().keySet()) {
+                    Object value = idVClaim.getMetadata().get(key);
+                    metadataDoc.append(key, value);
+                }
+                doc.remove("metadata");
+                doc.append(IdentityVerificationConstants.METADATA, metadataDoc);
+                doc.append(IdentityVerificationConstants.TENANT_ID, tenantId);
                 documents.add(doc);
             }
             MongoCollection<Document> collection = getCollectionName(mongoClient);
@@ -111,9 +112,6 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         } catch (MongoClientException e) {
             throw new IdentityVerificationServerException(ERROR_ADDING_IDV_CLAIMS.getCode(),
                     ERROR_ADDING_IDV_CLAIMS.getMessage(), e);
-        } catch (JsonProcessingException e) {
-            throw new IdentityVerificationServerException(ERROR_PROCESSING_IDV_CLAIM.getCode(),
-                    ERROR_PROCESSING_IDV_CLAIM.getMessage(), e);
         }
     }
 
@@ -130,17 +128,17 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         try (MongoClient mongoClient = createDatabaseConnection()) {
             MongoCollection<Document> collection = getCollectionName(mongoClient);
             Bson filter = Filters.and(
-                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM_REGEX,
+                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM,
                             idVClaim.getUuid()),
-                    Filters.eq(IdentityVerificationConstants.USER_ID_REGEX,
+                    Filters.eq(IdentityVerificationConstants.USER_ID,
                             idVClaim.getUserId()),
-                    Filters.eq(IdentityVerificationConstants.TENANT_ID_REGEX,
+                    Filters.eq(IdentityVerificationConstants.TENANT_ID,
                             tenantId));
             Document metadataDoc = Document.parse(idVClaim.getMetadata().toString());
             Bson update = Updates.combine(
-                    Updates.set(IdentityVerificationConstants.STATUS_REGEX,
+                    Updates.set(IdentityVerificationConstants.STATUS,
                             idVClaim.getStatus()),
-                    Updates.set(IdentityVerificationConstants.METADATA_REGEX,
+                    Updates.set(IdentityVerificationConstants.METADATA,
                             metadataDoc));
             collection.updateOne(filter, update);
         } catch (MongoClientException e) {
@@ -164,8 +162,8 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         try (MongoClient mongoClient = createDatabaseConnection()) {
             MongoCollection<Document> collection = getCollectionName(mongoClient);
             Document doc = collection.find(Filters.and(
-                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM_REGEX, idVClaimId),
-                    Filters.eq(IdentityVerificationConstants.TENANT_ID_REGEX, tenantId))).first();
+                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM, idVClaimId),
+                    Filters.eq(IdentityVerificationConstants.TENANT_ID, tenantId))).first();
             if (doc != null) {
                 return mapJsonToObj(doc.toJson());
             }
@@ -193,8 +191,8 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         try (MongoClient mongoClient = createDatabaseConnection()) {
             MongoCollection<Document> collection = getCollectionName(mongoClient);
             Bson filter = Filters.and(
-                    Filters.eq(IdentityVerificationConstants.USER_ID_REGEX, userId),
-                    Filters.eq(IdentityVerificationConstants.TENANT_ID_REGEX, tenantId));
+                    Filters.eq(IdentityVerificationConstants.USER_ID, userId),
+                    Filters.eq(IdentityVerificationConstants.TENANT_ID, tenantId));
             MongoCursor<Document> documents = collection.find(filter).iterator();
             List<IdVClaim> idVClaims = new ArrayList<>();
             while (documents.hasNext()) {
@@ -224,9 +222,9 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         try (MongoClient mongoClient = createDatabaseConnection()) {
             MongoCollection<Document> collection = getCollectionName(mongoClient);
             Bson filter = Filters.and(
-                    Filters.eq(IdentityVerificationConstants.USER_ID_REGEX, userId),
-                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM_REGEX, idVClaimId),
-                    Filters.eq(IdentityVerificationConstants.TENANT_ID_REGEX, tenantId)
+                    Filters.eq(IdentityVerificationConstants.USER_ID, userId),
+                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM, idVClaimId),
+                    Filters.eq(IdentityVerificationConstants.TENANT_ID, tenantId)
                                      );
             collection.deleteOne(filter);
         } catch (MongoClientException e) {
@@ -252,10 +250,10 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         try (MongoClient mongoClient = createDatabaseConnection()) {
             MongoCollection<Document> collection = getCollectionName(mongoClient);
             Document doc = collection.find(Filters.and(
-                    Filters.eq(IdentityVerificationConstants.USER_ID_REGEX, userId),
-                    Filters.eq(IdentityVerificationConstants.TENANT_ID_REGEX, tenantId),
-                    Filters.eq(IdentityVerificationConstants.IDVP_ID_REGEX, idVPId),
-                    Filters.eq(IdentityVerificationConstants.CLAIM_URI_REGEX, uri))).first();
+                    Filters.eq(IdentityVerificationConstants.USER_ID, userId),
+                    Filters.eq(IdentityVerificationConstants.TENANT_ID, tenantId),
+                    Filters.eq(IdentityVerificationConstants.IDVP_ID, idVPId),
+                    Filters.eq(IdentityVerificationConstants.CLAIM_URI, uri))).first();
             return doc != null;
         } catch (MongoClientException e) {
             throw new IdentityVerificationServerException(ERROR_CHECKING_IDV_CLAIM_DATA_EXISTENCE.getCode(),
@@ -277,8 +275,8 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         try (MongoClient mongoClient = createDatabaseConnection()) {
             MongoCollection<Document> collection = getCollectionName(mongoClient);
             Document doc = collection.find(Filters.and(
-                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM_REGEX, claimId),
-                    Filters.eq(IdentityVerificationConstants.TENANT_ID_REGEX, tenantId))).first();
+                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM, claimId),
+                    Filters.eq(IdentityVerificationConstants.TENANT_ID, tenantId))).first();
             return doc != null;
         } catch (MongoClientException e) {
             throw new IdentityVerificationServerException(ERROR_CHECKING_IDV_CLAIM_EXISTENCE.getCode(),
@@ -294,7 +292,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
      */
     private MongoClient createDatabaseConnection() throws IdentityVerificationServerException {
 
-        String url = IdentityUtil.getProperty(IdentityVerificationConstants.DatabaseConstants.DATABASE_URL_REGEX);
+        String url = IdentityUtil.getProperty(IdentityVerificationConstants.DatabaseConfigConstants.DATABASE_URL_REGEX);
         if (url != null) {
             return MongoClients.create(url);
         }
@@ -311,9 +309,9 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
      */
     private MongoCollection<Document> getCollectionName(MongoClient client) throws IdentityVerificationServerException {
 
-        String db = IdentityUtil.getProperty(IdentityVerificationConstants.DatabaseConstants.DATABASE_NAME_REGEX);
+        String db = IdentityUtil.getProperty(IdentityVerificationConstants.DatabaseConfigConstants.DATABASE_NAME_REGEX);
         String collectionName = IdentityUtil.
-                getProperty(IdentityVerificationConstants.DatabaseConstants.DATABASE_COLLECTION_REGEX);
+                getProperty(IdentityVerificationConstants.DatabaseConfigConstants.DATABASE_COLLECTION_REGEX);
 
         if (db != null && collectionName != null) {
             return client.getDatabase(db).getCollection(collectionName);
@@ -333,7 +331,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
 
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode metadataJsonNode = mapper.readTree(json).get(IdentityVerificationConstants.METADATA_REGEX);
+        JsonNode metadataJsonNode = mapper.readTree(json).get(IdentityVerificationConstants.METADATA);
         IdVClaim idVClaim = gson.fromJson(json, IdVClaim.class);
         if (metadataJsonNode != null) {
             idVClaim.setMetadata(new JSONObject(metadataJsonNode.toString()));
