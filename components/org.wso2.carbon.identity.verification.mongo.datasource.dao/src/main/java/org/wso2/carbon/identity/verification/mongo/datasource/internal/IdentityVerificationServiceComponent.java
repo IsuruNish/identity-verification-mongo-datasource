@@ -28,11 +28,9 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.extension.identity.verification.mgt.dao.IdentityVerificationClaimDAO;
 import org.wso2.carbon.identity.verification.mongo.datasource.IdentityVerificationClaimDAOImpl;
 
-//todo
-//chnage this
 /**
  * OSGi declarative services component which handles registration and un-registration of
- * IdentityVerifierService.
+ * IdentityVerifierMongoService
  */
 @Component(
         name = "org.wso2.carbon.extension.identity.verification.mongo.service",
@@ -49,14 +47,12 @@ public class IdentityVerificationServiceComponent {
             IdentityVerificationClaimDAO identityVerificationMongoService = new IdentityVerificationClaimDAOImpl();
             ctxt.getBundleContext().registerService(IdentityVerificationClaimDAO.class.getName(),
                     identityVerificationMongoService, null);
-            // TODO: 4/21/2023  
-//            change this
-            log.info("IdentityVerificationService bundle activated successfully.");
+            log.info("IdentityVerificationMongoService bundle activated successfully.");
             if (log.isDebugEnabled()) {
-                log.debug("IdentityVerificationService bundle is activated");
+                log.debug("IdentityVerificationMongoService bundle is activated");
             }
         } catch (Throwable e) {
-            log.fatal(" Error while activating IdentityVerificationService bundle ", e);
+            log.fatal(" Error while activating IdentityVerificationMongoService bundle ", e);
         }
     }
 
@@ -64,7 +60,7 @@ public class IdentityVerificationServiceComponent {
     protected void deactivate(ComponentContext ctxt) {
 
         if (log.isDebugEnabled()) {
-            log.debug("IdentityVerificationService bundle is deactivated ");
+            log.debug("IdentityVerificationMongoService bundle is deactivated ");
         }
     }
 }
