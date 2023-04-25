@@ -75,6 +75,7 @@
             <artifactId>gson</artifactId>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -89,13 +90,24 @@
                             org.wso2.carbon.identity.verification.mongo.datasource.internal;
                         </Private-Package>
                         <Import-Package>
-                            org.wso2.carbon.identity.core.util;
-                            version="${carbon.identity.package.import.version.range}",
+                            org.wso2.carbon.identity.core.util; version="${carbon.identity.package.import.version.range}",
+                            com.fasterxml.jackson.core;version="${com.fasterxml.jackson.version.range}",
+                            com.fasterxml.jackson.databind;version="${com.fasterxml.jackson.version.range}",
+                            com.google.gson;version="${com.google.gson.version.range}",
+                            com.mongodb;version="${com.mongodb.version.range}",
+                            com.mongodb.client;version="${com.mongodb.version.range}",
+                            com.mongodb.client.model;version="${com.mongodb.version.range}",
+                            com.mongodb.client.result;version="${com.mongodb.version.range}",
+                            org.apache.commons.logging;version="${org.apache.commons.logging.version.range}",
+                            org.bson;version="${com.mongodb.version.range}",
+                            org.bson.conversions;version="${com.mongodb.version.range}",
+                            org.json;version="${json.wso2.version.range}",
+                            org.osgi.framework;version="${org.osgi.framework.version.range}",
+                            org.osgi.service.component;version="${org.osgi.service.component.version.range}",
+                            org.wso2.carbon.extension.identity.verification.mgt.dao;version="1.0.0-SNAPSHOT",
+                            org.wso2.carbon.extension.identity.verification.mgt.exception;version="1.0.0-SNAPSHOT",
+                            org.wso2.carbon.extension.identity.verification.mgt.model;version="1.0.0-SNAPSHOT",
                         </Import-Package>
-
-<!--                        todo-->
-<!--                        remove this-->
-                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.verification.mongo.datasource.internal,
                             org.wso2.carbon.identity.verification.mongo.datasource.*; version="${project.version}"

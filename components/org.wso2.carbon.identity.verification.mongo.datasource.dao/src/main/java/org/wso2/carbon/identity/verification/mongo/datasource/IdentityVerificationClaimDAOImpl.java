@@ -19,6 +19,7 @@
 package org.wso2.carbon.identity.verification.mongo.datasource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,6 +31,8 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.model.Filters;
 
+import org.bson.json.JsonReader;
+import org.json.JSONArray;
 import org.wso2.carbon.extension.identity.verification.mgt.dao.IdentityVerificationClaimDAO;
 import org.wso2.carbon.extension.identity.verification.mgt.exception.IdentityVerificationException;
 import org.wso2.carbon.extension.identity.verification.mgt.exception.IdentityVerificationServerException;
@@ -40,6 +43,7 @@ import org.wso2.carbon.identity.core.util.IdentityUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import com.google.gson.Gson;
 import org.bson.Document;
@@ -100,9 +104,21 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
                 Document metadataDoc = new Document();
                 for (String key : idVClaim.getMetadata().keySet()) {
                     Object value = idVClaim.getMetadata().get(key);
-                    metadataDoc.append(key, value);
+                    if (value instanceof JSONObject){
+                        Document aggregateMetadataDoc = Document.parse(value.toString());
+                        metadataDoc.append(key, aggregateMetadataDoc);
+                    }
+                    else if (value instanceof JSONArray){
+                        JSONObject jsonObj = new JSONObject();
+                        jsonObj.put("key", new JSONArray(value.toString()));
+                        Document aggregateMetadataDoc = Document.parse(jsonObj.toString());
+                        metadataDoc.append(key, aggregateMetadataDoc.get("key"));
+                    }
+                    else{
+                        metadataDoc.append(key, value);
+                    }
                 }
-                doc.remove("metadata");
+                doc.remove(IdentityVerificationConstants.METADATA);
                 doc.append(IdentityVerificationConstants.METADATA, metadataDoc);
                 doc.append(IdentityVerificationConstants.TENANT_ID, tenantId);
                 documents.add(doc);
@@ -128,18 +144,13 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         try (MongoClient mongoClient = createDatabaseConnection()) {
             MongoCollection<Document> collection = getCollectionName(mongoClient);
             Bson filter = Filters.and(
-                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM,
-                            idVClaim.getUuid()),
-                    Filters.eq(IdentityVerificationConstants.USER_ID,
-                            idVClaim.getUserId()),
-                    Filters.eq(IdentityVerificationConstants.TENANT_ID,
-                            tenantId));
+                    Filters.eq(IdentityVerificationConstants.IDV_CLAIM, idVClaim.getUuid()),
+                    Filters.eq(IdentityVerificationConstants.USER_ID, idVClaim.getUserId()),
+                    Filters.eq(IdentityVerificationConstants.TENANT_ID, tenantId));
             Document metadataDoc = Document.parse(idVClaim.getMetadata().toString());
             Bson update = Updates.combine(
-                    Updates.set(IdentityVerificationConstants.STATUS,
-                            idVClaim.getStatus()),
-                    Updates.set(IdentityVerificationConstants.METADATA,
-                            metadataDoc));
+                    Updates.set(IdentityVerificationConstants.STATUS, idVClaim.getStatus()),
+                    Updates.set(IdentityVerificationConstants.METADATA, metadataDoc));
             collection.updateOne(filter, update);
         } catch (MongoClientException e) {
             throw new IdentityVerificationServerException(ERROR_UPDATING_IDV_CLAIM.getCode(),
@@ -293,7 +304,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
     private MongoClient createDatabaseConnection() throws IdentityVerificationServerException {
 
         String url = IdentityUtil.getProperty(IdentityVerificationConstants.DatabaseConfigConstants.DATABASE_URL_REGEX);
-        if (url != null) {
+        if (StringUtils.isNotBlank(url)) {
             return MongoClients.create(url);
         }
         throw new IdentityVerificationServerException(ERROR_GETTING_USER_STORE_URL.getCode(),
@@ -312,8 +323,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
         String db = IdentityUtil.getProperty(IdentityVerificationConstants.DatabaseConfigConstants.DATABASE_NAME_REGEX);
         String collectionName = IdentityUtil.
                 getProperty(IdentityVerificationConstants.DatabaseConfigConstants.DATABASE_COLLECTION_REGEX);
-
-        if (db != null && collectionName != null) {
+        if (StringUtils.isNotBlank(db) && StringUtils.isNotBlank(collectionName)) {
             return client.getDatabase(db).getCollection(collectionName);
         }
         throw new IdentityVerificationServerException(ERROR_GETTING_USER_STORE_DATA.getCode(),

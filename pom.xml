@@ -28,71 +28,62 @@
     <modules>
         <module>components/org.wso2.carbon.identity.verification.mongo.datasource.dao</module>
     </modules>
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.eclipse.osgi</groupId>
-            <artifactId>org.eclipse.osgi.services</artifactId>
-            <version>${org.eclipse.osgi.services.version}</version>
-<!--            <version>3.3.100.v20130513-1956</version>-->
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.osgi</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
-            <version>${org.eclipse.osgi.version}</version>
-<!--            <version>3.9.1.v20130814-1242</version>-->
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons.logging.version}</version>
-<!--            <version>1.2</version>-->
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.base</artifactId>
-            <scope>provided</scope>
-            <version>${org.wso2.carbon.identity.base.version}</version>
-<!--            <version>5.25.134</version>-->
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>${org.json.version}</version>
-<!--            <version>20220924</version>-->
-        </dependency>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>${mongo.java.driver.version}</version>
-<!--            <version>3.12.12</version>-->
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson-databind.version}</version>
-<!--            <version>2.14.2</version>-->
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.core</artifactId>
-            <version>${org.wso2.carbon.identity.core.version}</version>
-<!--            <version>5.25.134</version>-->
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${com.google.code.gson.version}</version>
-<!--            <version>2.10.1</version>-->
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.extension.identity.verification</groupId>
-            <artifactId>org.wso2.carbon.extension.identity.verification.mgt</artifactId>
-            <version>${org.wso2.carbon.extension.identity.verification.mgt.version}</version>
-<!--            <version>1.0.0-SNAPSHOT</version>-->
-        </dependency>
-    </dependencies>
-</dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.osgi</groupId>
+                <artifactId>org.eclipse.osgi.services</artifactId>
+                <version>${org.eclipse.osgi.services.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.osgi</groupId>
+                <artifactId>org.eclipse.osgi</artifactId>
+                <version>${org.eclipse.osgi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.base</artifactId>
+                <scope>provided</scope>
+                <version>${org.wso2.carbon.identity.base.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${org.json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongo-java-driver</artifactId>
+                <version>${mongo.java.driver.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-databind.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.core</artifactId>
+                <version>${org.wso2.carbon.identity.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${com.google.code.gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.extension.identity.verification</groupId>
+                <artifactId>org.wso2.carbon.extension.identity.verification.mgt</artifactId>
+                <version>${org.wso2.carbon.extension.identity.verification.mgt.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -107,8 +98,19 @@
         <jackson-databind.version>2.14.2</jackson-databind.version>
         <org.wso2.carbon.identity.core.version>5.25.134</org.wso2.carbon.identity.core.version>
         <com.google.code.gson.version>2.10.1</com.google.code.gson.version>
-        <org.wso2.carbon.extension.identity.verification.mgt.version>1.0.0-SNAPSHOT</org.wso2.carbon.extension.identity.verification.mgt.version>
+        <org.wso2.carbon.extension.identity.verification.mgt.version>1.0.0-SNAPSHOT
+        </org.wso2.carbon.extension.identity.verification.mgt.version>
+        <json.wso2.version.range>[3.0.0.wso2v1, 4.0.0)</json.wso2.version.range>
+        <org.osgi.framework.version.range>[1.7,2)</org.osgi.framework.version.range>
+        <org.osgi.service.component.version.range>[1.2,2)</org.osgi.service.component.version.range>
+        <org.apache.commons.logging.version.range>[1.2.0,2)</org.apache.commons.logging.version.range>
+        <com.fasterxml.jackson.version.range>[2.13.0,3)</com.fasterxml.jackson.version.range>
+        <com.mongodb.version.range>[3.12,4)</com.mongodb.version.range>
+        <com.google.gson.version.range>[2.8,3)</com.google.gson.version.range>
+        <org.wso2.carbon.extension.identity.verification.mgt.version>1.0.0-SNAPSHOT
+        </org.wso2.carbon.extension.identity.verification.mgt.version>
     </properties>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -139,6 +141,7 @@
             </plugin>
         </plugins>
     </build>
+
     <repositories>
         <repository>
             <id>wso2-nexus</id>
@@ -151,10 +154,12 @@
             </releases>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>wso2-maven2-repository</id>
             <url>http://dist.wso2.org/maven2</url>
         </pluginRepository>
     </pluginRepositories>
+
 </project>
