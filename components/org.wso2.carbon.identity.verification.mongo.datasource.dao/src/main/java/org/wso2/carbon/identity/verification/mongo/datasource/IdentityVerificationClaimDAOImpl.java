@@ -19,7 +19,6 @@
 package org.wso2.carbon.identity.verification.mongo.datasource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,7 +30,6 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.model.Filters;
 
-import org.bson.json.JsonReader;
 import org.json.JSONArray;
 import org.wso2.carbon.extension.identity.verification.mgt.dao.IdentityVerificationClaimDAO;
 import org.wso2.carbon.extension.identity.verification.mgt.exception.IdentityVerificationException;
