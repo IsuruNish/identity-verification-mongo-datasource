@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1682420616639
+Bnd-LastModified: 1682612952046
 Build-Jdk: 11.0.18
 Built-By: WSO2
 Bundle-ManifestVersion: 2
@@ -9,11 +9,11 @@ Bundle-SymbolicName: org.wso2.carbon.identity.verification.mongo.datasou
 Bundle-Version: 1.0.0.SNAPSHOT
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.wso2.carbon.identity.verification.mongo.datasource;v
- ersion="1.0.0.SNAPSHOT";uses:="org.wso2.carbon.extension.identity.verif
- ication.mgt.dao,org.wso2.carbon.extension.identity.verification.mgt.exc
- eption,org.wso2.carbon.extension.identity.verification.mgt.model",org.w
- so2.carbon.identity.verification.mongo.datasource.utils;version="1.0.0.
- SNAPSHOT"
+ ersion="1.0.0.SNAPSHOT";uses:="org.bson,org.wso2.carbon.extension.ident
+ ity.verification.mgt.dao,org.wso2.carbon.extension.identity.verificatio
+ n.mgt.exception,org.wso2.carbon.extension.identity.verification.mgt.mod
+ el",org.wso2.carbon.identity.verification.mongo.datasource.utils;versio
+ n="1.0.0.SNAPSHOT"
 Import-Package: org.wso2.carbon.identity.core.util;version="[5.14.0,6.0.
  0)",com.fasterxml.jackson.core;version="[2.13.0,3)",com.fasterxml.jacks
  on.databind;version="[2.13.0,3)",com.google.gson;version="[2.8,3)",com.

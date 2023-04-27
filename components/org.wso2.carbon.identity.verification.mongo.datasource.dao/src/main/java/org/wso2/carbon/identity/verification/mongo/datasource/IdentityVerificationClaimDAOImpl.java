@@ -99,23 +99,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
             List<Document> documents = new ArrayList<>();
             for (IdVClaim idVClaim : idvClaimList) {
                 Document doc = Document.parse(gson.toJson(idVClaim));
-                Document metadataDoc = new Document();
-                for (String key : idVClaim.getMetadata().keySet()) {
-                    Object value = idVClaim.getMetadata().get(key);
-                    if (value instanceof JSONObject){
-                        Document aggregateMetadataDoc = Document.parse(value.toString());
-                        metadataDoc.append(key, aggregateMetadataDoc);
-                    }
-                    else if (value instanceof JSONArray){
-                        JSONObject jsonObj = new JSONObject();
-                        jsonObj.put("key", new JSONArray(value.toString()));
-                        Document aggregateMetadataDoc = Document.parse(jsonObj.toString());
-                        metadataDoc.append(key, aggregateMetadataDoc.get("key"));
-                    }
-                    else{
-                        metadataDoc.append(key, value);
-                    }
-                }
+                Document metadataDoc = mapMetadataToDocument(idVClaim);
                 doc.remove(IdentityVerificationConstants.METADATA);
                 doc.append(IdentityVerificationConstants.METADATA, metadataDoc);
                 doc.append(IdentityVerificationConstants.TENANT_ID, tenantId);
@@ -294,7 +278,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
     }
 
     /**
-     * Conenct to the MongoDB server.
+     * Connect to the MongoDB server.
      *
      * @return MongoClient connection object.
      * @throws IdentityVerificationServerException Identity Verification Server Exception.
@@ -329,7 +313,7 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
     }
 
     /**
-     * Get the identity verification claim.
+     * Map the json string to an identity verification claim object.
      *
      * @param json String format of the document.
      * @return Identity verification claim object.
@@ -345,6 +329,33 @@ public class IdentityVerificationClaimDAOImpl implements IdentityVerificationCla
             idVClaim.setMetadata(new JSONObject(metadataJsonNode.toString()));
         }
         return idVClaim;
+    }
+
+    /**
+     * Map the metadata in identity verification claim object to a document.
+     *
+     * @param idVClaim IdentityVerificationClaim.
+     * @return Document metadata document.
+     */
+    public Document mapMetadataToDocument(IdVClaim idVClaim){
+        Document metadataDoc = new Document();
+        for (String key : idVClaim.getMetadata().keySet()) {
+            Object value = idVClaim.getMetadata().get(key);
+            if (value instanceof JSONObject){
+                Document aggregateMetadataDoc = Document.parse(value.toString());
+                metadataDoc.append(key, aggregateMetadataDoc);
+            }
+            else if (value instanceof JSONArray){
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put(IdentityVerificationConstants.KEY, new JSONArray(value.toString()));
+                Document aggregateMetadataDoc = Document.parse(jsonObj.toString());
+                metadataDoc.append(key, aggregateMetadataDoc.get(IdentityVerificationConstants.KEY));
+            }
+            else{
+                metadataDoc.append(key, value);
+            }
+        }
+        return metadataDoc;
     }
 
 }

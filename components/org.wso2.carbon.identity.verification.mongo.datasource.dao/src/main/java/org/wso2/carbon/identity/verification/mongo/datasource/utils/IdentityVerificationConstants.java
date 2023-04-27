@@ -31,6 +31,7 @@ public class IdentityVerificationConstants {
     public static final String USER_ID = "userId";
     public static final String CLAIM_URI = "claimUri";
     public static final String IDVP_ID = "idVPId";
+    public static final String KEY = "key";
 
     /**
      * Holds constants related to configuring the database connection.

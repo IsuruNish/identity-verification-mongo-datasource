@@ -9,5 +9,8 @@
         <module name="org.wso2.carbon.identity.verification.mongo.datasource.dao" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="org.wso2.carbon.identity.verification.datasource.mongo.dao" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
